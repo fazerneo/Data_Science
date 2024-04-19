@@ -36,4 +36,64 @@ ncbirths %>%
   summarise(N = n(),
             r = cor(weight, mage))
 
+?cor()
+
+# using an argument of the correlation function to compute only for those rows that dont have missing values for both of the vars
+ncbirths %>%
+  summarise(N = n(),
+            r = cor(weight, mage, use = "pairwise.complete.obs"))
+
+?bdims
+
+head(bdims)
+
+ggplot(data = bdims,
+       aes(x = hgt, y = wgt)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = F)
+
+?geom_smooth()
+
+# making a new data frame called bdims_summary
+bdims_summary <- data.frame(
+  N = 507,
+  r = 0.7173011,
+  mean_hgt = 171.1438,
+  sd_hgt = 9.407205,
+  mean_wgt = 69.14753,
+  sd_wgt = 13.34576
+)
+
+is.data.frame(bdims_summary)
+
+bdims_summary %>% mutate(
+  slope = r * (sd_wgt/sd_hgt),
+  intercept = mean_wgt - slope * mean_hgt 
+)
+
+# linear model with weight as targeted outcome and hgt as predictor. can use hgt+variable_name to add predictors
+# outputs slope and intercept
+mod = lm(wgt ~ hgt,
+         data = bdims)
+
+coefs = coef(mod)
+
+summary(mod)
+
+new <- data.frame(
+  wgt = 74.8,
+  hgt = 182.8
+)
+
+# using mod object to find new data weight
+predict(mod, newdata = new)
+
+x <- residuals(mod)
+x
+
+dof <- df.residual(mod)
+
+mean(x)
+
+RMSE <- sqrt(sum(x^2) / dof)
 
