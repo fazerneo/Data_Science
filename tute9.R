@@ -31,3 +31,19 @@ dim(testset)
 
 library(e1071)
 
+model = svm(churn~., # here churn is the outcome we are predicting and . means all variables are predictors
+            data = trainset,
+            kernel = 'radial',
+            cost = 1,
+            gamma = 1/col(trainset))
+
+summary(model)
+svm.pred = predict(model, testset[, !names(testset)
+                                  %in% c("churn")])
+
+svm.table = table(svm.pred, 
+                  testset$churn)
+
+library(caret)
+
+confusionMatrix(svm.table)
